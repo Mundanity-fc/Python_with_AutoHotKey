@@ -45,7 +45,7 @@ class Panel(tkinter.Tk):
         self.info2 = None
         self.info1 = None
         self.title("自动化测量")
-        self.geometry("380x600")
+        self.geometry("380x500")
         self.layout()
         self.template = ""
         self.stop_flag = False
@@ -110,7 +110,7 @@ class Panel(tkinter.Tk):
         self.start_count = tk.Button(self, text="开始执行", command=self.start_test)
         self.start_count.place(x=150, y=320)
         # 帮助按钮
-        self.help = tk.Button(self, text="程序说明", command='')
+        self.help = tk.Button(self, text="程序说明", command=self.show_help)
         self.help.place(x=250, y=320)
 
         # 说明文字3
@@ -127,7 +127,10 @@ class Panel(tkinter.Tk):
         self.countdown_info3.place(x=180, y=400)
         self.cancel = tk.Button(self, text="结束目前任务", command=self.cancel_task)
         self.cancel["state"] = "disable"
-        self.cancel.place(x=140, y=450)
+        self.cancel.place(x=80, y=450)
+        self.resume = tk.Button(self, text="恢复目前任务", command=self.resume_task)
+        self.resume["state"] = "disable"
+        self.resume.place(x=200, y=450)
 
     # 测试过程
     def test(self):
@@ -153,6 +156,7 @@ class Panel(tkinter.Tk):
             return tk.messagebox.showerror("软件错误", "软件错误，请联系开发者")
         # 设置结束标志为假
         self.stop_flag = False
+        self.start_count["state"] = "disable"
         # 开始进行倒计时
         self.run()
 
@@ -254,4 +258,41 @@ class Panel(tkinter.Tk):
         self.stop_flag = True
         # 修改按钮状态
         self.cancel["state"] = "disable"
+        self.resume["state"] = "normal"
         self.do_test["state"] = "normal"
+        self.start_count["state"] = "normal"
+
+    # 倒计时恢复函数
+    def resume_task(self):
+        """
+        倒计时恢复函数，于该恢复消倒计时
+        :return: 无返回值
+        """""
+        # 将结束标志设置为真
+        self.stop_flag = False
+        # 修改按钮状态
+        self.resume["state"] = "disable"
+        self.cancel["state"] = "normal"
+        self.do_test["state"] = "disable"
+        self.start_count["state"] = "disable"
+        self.do_countdown()
+
+    # 说明显示函数
+    def show_help(self):
+        """
+        说明显示函数，弹出说明
+        :return: messagebox
+        """""
+        return tk.messagebox.showinfo("软件说明", "程序源码详见：https://github.com/Mundanity-fc/Python_with_AutoHotKey\n\n"
+                                                  "指令间隔时间：\n该项不宜过长或过短，过长会导致每次鼠标点击将要等待较长的时间，果断则会造成窗口切换过快，鼠标来不及移动与点击\n\n"
+                                                  "测量等待时间：\n该项的时长为从点击`Run Test`到`Data Center`中出现数据的这段时间，建议多出2s左右的时间，以免出现短暂的卡顿致使还未测量结束就开始点击保存数据的情况\n\n"
+                                                  "间隔时间：\n该项的时长为预计每次测量之间的时间间隔，该时长不能小于测量等待时间+3s，否则软件会多次测量从而崩溃！\n\n"
+                                                  "`测试一下`按钮：\n按下该按钮后，程序会自动执行一次测量与保存，可以通过该按钮来确定上方的参数是否设置合理\n\n"
+                                                  "`开始执行`按钮：\n按下该按钮后，程序会开始自动测量任务，可以通过`结束目前任务`按钮来终止。任务执行过程中，将无法点击`测试一下`按钮，一次避免不必要的冲突\n\n"
+                                                  "`程序说明`按钮：\n显示本说明\n\n"
+                                                  "`结束目前任务`按钮：\n结束当前的自动化任务。倒计时会停止，再次点击`开始执行`后，倒计时会重置而不是恢复\n\n"
+                                                  "`恢复目前任务`按钮：\n恢复刚才的自动化任务。倒计时会继续执行。\n\n"
+                                                  "------------------------------------------------------\n\n"
+                                                  "执行前请确认测试程序已经正确配置以及至少手动执行过一次测试\n\n"
+                                                  "任务的结束可能会有 1~2s 的延迟，这是由于程序未采用中断时间监听方式编写\n\n"
+                                                  "每次更新参数后请点击`测试一下`按钮或者`开始执行`按钮，这样才能生成新的执行脚本。如果更新了参数后点击的是`恢复目前任务`按钮，则脚本依然按照之前的参数执行！！！\n\n")
