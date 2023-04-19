@@ -138,8 +138,10 @@ class Panel(tkinter.Tk):
         更新脚本，并执行一次测试
         :return: 无返回值
         """""
-        self.validate_numbers()
-        self.generate_file()
+        if not self.validate_numbers():
+            return tk.messagebox.showerror("数字错误", "请在该输入框输入纯数字")
+        if not self.generate_file():
+            return tk.messagebox.showerror("软件错误", "缺少 AHKTemplate 模板，请联系开发者")
         if not os.path.exists("temp.ahk"):
             return tk.messagebox.showerror("软件错误", "软件错误，请联系开发者")
         os.system("AutoHotkey.exe ./temp.ahk")
@@ -150,8 +152,10 @@ class Panel(tkinter.Tk):
         更新脚本，并开始自动测试
         :return: 无返回值
         """""
-        self.validate_numbers()
-        self.generate_file()
+        if not self.validate_numbers():
+            return tk.messagebox.showerror("数字错误", "请在该输入框输入纯数字")
+        if not self.generate_file():
+            return tk.messagebox.showerror("软件错误", "缺少 AHKTemplate 模板，请联系开发者")
         if not os.path.exists("temp.ahk"):
             return tk.messagebox.showerror("软件错误", "软件错误，请联系开发者")
         # 设置结束标志为假
@@ -193,7 +197,9 @@ class Panel(tkinter.Tk):
         wait = self.wait.get()
         interval = self.interval.get()
         if (not delay.isdigit()) or (not wait.isdigit()) or (not interval.isdigit()):
-            return tk.messagebox.showerror("数字错误", "请在该输入框输入纯数字")
+            return False
+        else:
+            return True
 
     # 脚本文件生成函数
     def generate_file(self):
@@ -205,7 +211,7 @@ class Panel(tkinter.Tk):
         wait = self.wait.get()
         new_wait = str(int(wait) * 1000)
         if not os.path.exists("AHKTemplate"):
-            return tk.messagebox.showerror("软件错误", "缺少 AHKTemplate 模板，请联系开发者")
+            return False
         template = open("./AHKTemplate", encoding="utf-8")
         commands = template.readlines()
         template.close()
@@ -226,6 +232,7 @@ class Panel(tkinter.Tk):
         new_file = open("./temp.ahk", encoding="utf-8", mode="w")
         new_file.writelines(new_commands)
         new_file.close()
+        return True
 
     # 倒计时更新函数
     def do_countdown(self):
@@ -265,7 +272,7 @@ class Panel(tkinter.Tk):
     # 倒计时恢复函数
     def resume_task(self):
         """
-        倒计时恢复函数，于该恢复消倒计时
+        倒计时恢复函数，于该处恢复倒计时
         :return: 无返回值
         """""
         # 将结束标志设置为真
@@ -294,5 +301,5 @@ class Panel(tkinter.Tk):
                                                   "`恢复目前任务`按钮：\n恢复刚才的自动化任务。倒计时会继续执行。\n\n"
                                                   "------------------------------------------------------\n\n"
                                                   "执行前请确认测试程序已经正确配置以及至少手动执行过一次测试\n\n"
-                                                  "任务的结束可能会有 1~2s 的延迟，这是由于程序未采用中断时间监听方式编写\n\n"
+                                                  "任务的结束可能会有 1~2s 的延迟，这是由于程序未采用中断事件监听方式编写\n\n"
                                                   "每次更新参数后请点击`测试一下`按钮或者`开始执行`按钮，这样才能生成新的执行脚本。如果更新了参数后点击的是`恢复目前任务`按钮，则脚本依然按照之前的参数执行！！！\n\n")
