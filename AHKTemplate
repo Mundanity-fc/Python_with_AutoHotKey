@@ -1,0 +1,28 @@
+; 切换窗口
+WinActivate "LabTracer 2.0  SourceMeter?Integration Software - Keithley Instruments, Inc. "
+; 暂停防过热
+Sleep <delay>
+; 鼠标点击开始测量
+MouseClick "left", 252, 52
+; 等待数据测量
+Sleep <wait>
+; 切换窗口至数据中心
+WinActivate "LabTracer 2.0 DataCenter"
+; 暂停防过热
+Sleep <delay>
+; 鼠标点击数据窗口
+MouseClick "left", 102, 39
+; 暂停防过热
+Sleep <delay>
+; 鼠标点击保存数据
+MouseClick "left", 580, 568
+; 暂停防过热
+Sleep <delay>
+; 将当前时间保存至剪切板
+A_Clipboard := FormatTime(, "yyyy-MM-dd,HH-mm-ss")
+; 进行粘贴操作
+Send "^v"
+; 暂停防过热
+Sleep <delay>
+; 回车
+Send "{Enter}"
