@@ -49,8 +49,9 @@ class Panel(tkinter.Tk):
         self.layout()
         self.template = ""
         self.stop_flag = False
+        self.work_dir = os.path.split(os.path.abspath(__file__))[0]
 
-    # 布局设计
+        # 布局设计
     def layout(self):
         """
         进行GUI的布局设计
@@ -144,7 +145,7 @@ class Panel(tkinter.Tk):
             return tk.messagebox.showerror("软件错误", "缺少 AHKTemplate 模板，请联系开发者")
         if not os.path.exists("temp.ahk"):
             return tk.messagebox.showerror("软件错误", "软件错误，请联系开发者")
-        os.system("AutoHotkey.exe ./temp.ahk")
+        os.system("AutoHotkeyUX.exe " + self.work_dir + "\\temp.ahk")
 
     # 执行过程
     def start_test(self):
@@ -252,7 +253,7 @@ class Panel(tkinter.Tk):
         else:
             # 倒计时结束，执行脚本，并重新开始倒计时
             if self.time <= 0:
-                os.system("AutoHotkey.exe ./temp.ahk")
+                os.system("AutoHotkeyUX.exe " + self.work_dir + "\\temp.ahk")
                 self.run()
 
     # 倒计时取消函数
