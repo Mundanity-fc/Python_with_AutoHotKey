@@ -49,7 +49,7 @@ class Panel(tkinter.Tk):
         self.layout()
         self.template = ""
         self.stop_flag = False
-        self.work_dir = os.path.split(os.path.abspath(__file__))[0]
+        self.work_dir = os.getcwd()
 
         # 布局设计
     def layout(self):
